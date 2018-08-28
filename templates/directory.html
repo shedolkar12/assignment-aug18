@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% for item in tree %}
+        {% if item.type == "tree" %}
+        <a href="{{ item.path }}"><span class="glyphicon glyphicon-folder-close" style="color: rgba(3,47,98,0.5);"></span>  {{ item.path }} </a>
+        {% else %}
+        <a href="{{ item.path }}"> <span class="glyphicon glyphicon-file" style="color: rgba(1,71,28,0.5);"></span>  {{ item.path }} </a>
+        {% endif %}
+        <br>
+{% endfor %}
+
+
+{% endblock %}

@@ -13,6 +13,8 @@ def index():
 def profile(username):
     url = GITHUB_BASE_URL+'/users/%s'%username
     r = requests.get(url, auth=('shedolkar12', 'Shaddy@12'))
+    if r.status_code!=200:
+        return "Not Valid User"
     url = GITHUB_BASE_URL + '/users/%s/repos'%username
     repos = requests.get(url, auth=('shedolkar12', 'Shaddy@12'))
     content = r.json()
@@ -25,13 +27,29 @@ def profile(username):
         content['repos'].append(d)
     return render_template('profile.html', **content)
 
-@app.route('/<n>')
-def hello_name(n):
-    return "Hello {}!".format(n)
+@app.route('/<username>/<repo>')
+def repo_master(username=None, repo=None):
+    sha = get_master_branch_sha(username, repo)
+    if not sha:
+        return "No branches"
+    trees_url = GITHUB_BASE_URL + '/repos/%s/%s/git/trees/%s'%(username, repo, sha)
+    r = requests.get(trees_url, auth=('shedolkar12', 'Shaddy@12'))
+    if r.status_code!=200:
+        return "Not valid Repo"
+    content = r.json()
+    return render_template('directory.html', **content)
 
-@app.route('/test/<name>/')
-def hello1(name=None):
-    return render_template('test.html', name=name)
+def get_master_branch_sha(username, repo):
+    url = GITHUB_BASE_URL + '/repos/%s/%s/branches'%(username, repo)
+    r = requests.get(url, auth=('shedolkar12', 'Shaddy@12'))
+    if r.status_code!=200:
+        return "Not Valid"
+    response = r.json()
+    sha = None
+    for obj in response:
+        if obj['name']=='master':
+            sha = obj['commit']['sha']
+    return sha
 
 if __name__ == '__main__':
     app.run()
