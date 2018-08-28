@@ -1,0 +1,17 @@
+<!doctype html>
+<title>Hello from Flask</title>
+{% if name %}
+  <h1>Hello {{ name }} !</h1>
+{% endif %}
+
+{% if location  %}
+  <h5>Location: {{ location }}!</h5>
+{% endif %}
+
+<img src="{{avatar_url}}"></img>
+
+{{repos}}
+
+{% for item in repos %}
+        <li><a href="{{ item.url }}">{{ item.name }} {{item.date_created}}</a></li>
+{% endfor %}
