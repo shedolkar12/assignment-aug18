@@ -14,11 +14,11 @@ def index():
 @app.route('/<username>')
 def profile(username):
     url = GITHUB_BASE_URL+'/users/%s'%username
-    r = requests.get(url, auth=('shedolkar12', 'Shaddy@12'))
+    r = requests.get(url)
     if r.status_code!=200:
         return "Not Valid User"
     url = GITHUB_BASE_URL + '/users/%s/repos'%username
-    repos = requests.get(url, auth=('shedolkar12', 'Shaddy@12'))
+    repos = requests.get(url)
     content = r.json()
     content['repos'] = []
     content['username'] = username
@@ -36,7 +36,7 @@ def repo_master(username=None, repo=None):
     if not sha:
         return "No branches"
     trees_url = GITHUB_BASE_URL + '/repos/%s/%s/git/trees/%s'%(username, repo, sha)
-    r = requests.get(trees_url, auth=('shedolkar12', 'Shaddy@12'))
+    r = requests.get(trees_url)
     if r.status_code!=200:
         return "Not valid Repo"
     content = r.json()
@@ -44,7 +44,7 @@ def repo_master(username=None, repo=None):
 
 def get_master_branch_sha(username, repo):
     url = GITHUB_BASE_URL + '/repos/%s/%s/branches'%(username, repo)
-    r = requests.get(url, auth=('shedolkar12', 'Shaddy@12'))
+    r = requests.get(url)
     if r.status_code!=200:
         return "Not Valid"
     response = r.json()
@@ -57,7 +57,7 @@ def get_master_branch_sha(username, repo):
 @app.route('/tree/<typ>/<path>')
 def directory(typ=None, path=None):
     trees_url = request.args.get('url', None)
-    r = requests.get(trees_url, auth=('shedolkar12', 'Shaddy@12'))
+    r = requests.get(trees_url)
     if r.status_code!=200:
         return "Not valid Repo"
     if typ=='tree':
