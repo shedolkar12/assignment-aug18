@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  {% if typ == 'img' %}
+      <img src="data:image/png;base64, {{content}}" alt="img" />
+  {% else %}
+      <pre style="all: revert;">{{ content }}</pre>
+  {% endif %}
+{% endblock %}

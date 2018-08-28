@@ -1,17 +1,20 @@
-<!doctype html>
+{% extends 'base.html' %}
+{% block content %}
 <title>Hello from Flask</title>
-{% if name %}
-  <h1>Hello {{ name }} !</h1>
-{% endif %}
-
-{% if location  %}
-  <h5>Location: {{ location }}!</h5>
-{% endif %}
-
-<img src="{{avatar_url}}"></img>
-
-<!-- {{repos}} -->
-
-{% for item in repos %}
-        <li><a href="{{ item.url }}">{{ item.name }} {{item.date_created}}</a></li>
-{% endfor %}
+<div class="row">
+<div class="col-md-5">
+  {% if name %}
+    <h1>Hello {{ name }} !</h1>
+  {% endif %}
+  {% if location  %}
+    <h5>Location: {{ location }}!</h5>
+  {% endif %}
+  <img class="img-responsive" src="{{avatar_url}}" width="304" height="236"></img>
+</div>
+<div class="col-md-7">
+  <div style="padding-top:40px;"> Repo List </div>
+  {% for item in repos %}
+      <a href="/{{username}}/{{item.name}}">{{ item.name }}</a><br>
+  {% endfor %}
+</div>
+{% endblock %}

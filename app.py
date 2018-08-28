@@ -1,7 +1,9 @@
 from flask import Flask
 from flask import render_template
+from flask import request
 import requests
 import json
+import base64
 app = Flask(__name__)
 GITHUB_BASE_URL = "https://api.github.com"
 
@@ -19,6 +21,7 @@ def profile(username):
     repos = requests.get(url, auth=('shedolkar12', 'Shaddy@12'))
     content = r.json()
     content['repos'] = []
+    content['username'] = username
     for obj in repos.json():
         d = dict()
         d['name'] = obj['name']
@@ -50,6 +53,27 @@ def get_master_branch_sha(username, repo):
         if obj['name']=='master':
             sha = obj['commit']['sha']
     return sha
+
+@app.route('/tree/<typ>/<path>')
+def directory(typ=None, path=None):
+    trees_url = request.args.get('url', None)
+    r = requests.get(trees_url, auth=('shedolkar12', 'Shaddy@12'))
+    if r.status_code!=200:
+        return "Not valid Repo"
+    if typ=='tree':
+        content = r.json()
+        return render_template('directory.html', **content)
+    elif typ=="blob":
+        typ = 'other'
+        exte = path.split('.')[-1]
+        if exte.lower() in ['jpeg', 'png', 'jpg']:
+            typ = 'img'
+            content = r.json()['content']
+        else:
+            content =  base64.b64decode(r.json()['content'])
+        return render_template("file.html", content=content, typ=typ)
+    else:
+        return "Not valid type"
 
 if __name__ == '__main__':
     app.run()
